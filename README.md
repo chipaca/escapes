@@ -11,3 +11,11 @@ keeps things sane.
 This does not use terminfo, and just relies on ECMA-48 and related
 ANSI standards; see https://en.wikipedia.org/wiki/ANSI_escape_code
 for too much and yet too little detail.
+
+Currently implemented:
+
+* Hyperlinks
+* 24-bit colour
+* Reverse video
+* Bold
+* Italic
