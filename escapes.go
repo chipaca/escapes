@@ -67,11 +67,13 @@ func Colorized(s string, fg, bg *color.Color) width.StringWidther {
 const (
 	csi = "\x1b["
 
-	beginReverse = csi + "7m"
-	beginBold    = csi + "1m"
-	beginItalic  = csi + "7m"
-	end          = csi + "0m"
-	clrEOL       = csi + "K"
+	beginBold      = csi + "1m"
+	beginDim       = csi + "2m"
+	beginItalic    = csi + "3m"
+	beginUnderline = csi + "4m"
+	beginReverse   = csi + "7m"
+	end            = csi + "0m"
+	clrEOL         = csi + "K"
 )
 
 // Reverse returns a string that turns on reverse video mode for the
@@ -91,6 +93,14 @@ func Bold(s string) width.StringWidther {
 	}
 }
 
+// Dim returns a string that turns on dim mode for the text given.
+func Dim(s string) width.StringWidther {
+	return width.StringAndWidth{
+		S: beginDim + s + end,
+		W: runewidth.StringWidth(s),
+	}
+}
+
 // Italic returns a string that turns on italic mode for the text given.
 //
 // NOTE many terminals don't implement this (or have support for it
@@ -98,6 +108,14 @@ func Bold(s string) width.StringWidther {
 func Italic(s string) width.StringWidther {
 	return width.StringAndWidth{
 		S: beginItalic + s + end,
+		W: runewidth.StringWidth(s),
+	}
+}
+
+// Underline returns a string that turns on underline mode for the text given.
+func Underline(s string) width.StringWidther {
+	return width.StringAndWidth{
+		S: beginUnderline + s + end,
 		W: runewidth.StringWidth(s),
 	}
 }
