@@ -64,11 +64,21 @@ func Colorized(s string, fg, bg *color.Color) width.StringWidther {
 	}
 }
 
+const (
+	csi = "\x1b["
+
+	beginReverse = csi + "7m"
+	beginBold    = csi + "1m"
+	beginItalic  = csi + "7m"
+	end          = csi + "0m"
+	clrEOL       = csi + "K"
+)
+
 // Reverse returns a string that turns on reverse video mode for the
 // text given.
 func Reverse(s string) width.StringWidther {
 	return width.StringAndWidth{
-		S: "\x1b[7m" + s + "\x1b[0m",
+		S: beginReverse + s + end,
 		W: runewidth.StringWidth(s),
 	}
 }
@@ -76,7 +86,7 @@ func Reverse(s string) width.StringWidther {
 // Bold returns a string that turns on bold mode for the text given.
 func Bold(s string) width.StringWidther {
 	return width.StringAndWidth{
-		S: "\x1b[1m" + s + "\x1b[0m",
+		S: beginBold + s + end,
 		W: runewidth.StringWidth(s),
 	}
 }
@@ -87,7 +97,17 @@ func Bold(s string) width.StringWidther {
 //      turned off by default).
 func Italic(s string) width.StringWidther {
 	return width.StringAndWidth{
-		S: "\x1b[3m" + s + "\x1b[0m",
+		S: beginItalic + s + end,
 		W: runewidth.StringWidth(s),
 	}
+}
+
+// ReverseLine returns a string that uses reverse video and clears to the end of the line.
+//
+// This includes a newline to avoid confusion (otherwise the cursor
+// maybe be in an unexpected place).
+//
+// Note that the width of the string is terminal-dependent and thus not knowable from here.
+func ReverseLine(s string) string {
+	return beginReverse + s + clrEOL + end + "\n"
 }
