@@ -59,28 +59,30 @@ func Colorized(s string, fg, bg *color.Color) width.StringWidther {
 		)
 	}
 	return width.StringAndWidth{
-		S: "\x1b[" + strings.Join(bits, ";") + "m" + s + "\x1b[0m",
+		S: CSI + strings.Join(bits, ";") + "m" + s + SGR0,
 		W: runewidth.StringWidth(s),
 	}
 }
 
-const (
-	csi = "\x1b["
+// CSI or Control Sequence Introducer is the start of most things we deal with here
+const CSI = "\x1b["
 
-	beginBold      = csi + "1m"
-	beginDim       = csi + "2m"
-	beginItalic    = csi + "3m"
-	beginUnderline = csi + "4m"
-	beginReverse   = csi + "7m"
-	end            = csi + "0m"
-	clrEOL         = csi + "K"
+// Several constants that might be handy to have (and are used by us)
+const (
+	BeginBold      = CSI + "1m"
+	BeginDim       = CSI + "2m"
+	BeginItalic    = CSI + "3m"
+	BeginUnderline = CSI + "4m"
+	BeginReverse   = CSI + "7m"
+	SGR0           = CSI + "0m"
+	ClrEOL         = CSI + "K"
 )
 
 // Reverse returns a string that turns on reverse video mode for the
 // text given.
 func Reverse(s string) width.StringWidther {
 	return width.StringAndWidth{
-		S: beginReverse + s + end,
+		S: BeginReverse + s + SGR0,
 		W: runewidth.StringWidth(s),
 	}
 }
@@ -88,7 +90,7 @@ func Reverse(s string) width.StringWidther {
 // Bold returns a string that turns on bold mode for the text given.
 func Bold(s string) width.StringWidther {
 	return width.StringAndWidth{
-		S: beginBold + s + end,
+		S: BeginBold + s + SGR0,
 		W: runewidth.StringWidth(s),
 	}
 }
@@ -96,7 +98,7 @@ func Bold(s string) width.StringWidther {
 // Dim returns a string that turns on dim mode for the text given.
 func Dim(s string) width.StringWidther {
 	return width.StringAndWidth{
-		S: beginDim + s + end,
+		S: BeginDim + s + SGR0,
 		W: runewidth.StringWidth(s),
 	}
 }
@@ -107,7 +109,7 @@ func Dim(s string) width.StringWidther {
 //      turned off by default).
 func Italic(s string) width.StringWidther {
 	return width.StringAndWidth{
-		S: beginItalic + s + end,
+		S: BeginItalic + s + SGR0,
 		W: runewidth.StringWidth(s),
 	}
 }
@@ -115,7 +117,7 @@ func Italic(s string) width.StringWidther {
 // Underline returns a string that turns on underline mode for the text given.
 func Underline(s string) width.StringWidther {
 	return width.StringAndWidth{
-		S: beginUnderline + s + end,
+		S: BeginUnderline + s + SGR0,
 		W: runewidth.StringWidth(s),
 	}
 }
@@ -127,5 +129,5 @@ func Underline(s string) width.StringWidther {
 //
 // Note that the width of the string is terminal-dependent and thus not knowable from here.
 func ReverseLine(s string) string {
-	return beginReverse + s + clrEOL + end + "\n"
+	return BeginReverse + s + ClrEOL + SGR0 + "\n"
 }
